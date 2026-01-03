@@ -12,12 +12,13 @@ impl std::fmt::Display for Request {
 }
 
 pub enum Method {
-    GET,
-    POST,
+    Get,
+    Post,
 }
 
 pub enum DecodeHttpError {
     InvalidHeader,
+    InvalidMethod(&str),
 }
 
 pub fn decode_http_request(buf: BytesMut) -> Result<Request, DecodeHttpError> {
@@ -30,7 +31,25 @@ pub fn decode_http_request(buf: BytesMut) -> Result<Request, DecodeHttpError> {
     let Ok(headers) = str::from_utf8(&buf[..headers_end]) else {
         return Err(DecodeHttpError::InvalidHeader);
     };
+
     let mut headers = headers.lines();
+    let Some(request_line) = headers.next() else {
+        return Err(DecodeHttpError::InvalidHeader);
+    };
+
+    let mut request_line = request_line.split_whitespace();
+    let (Some(method), Some(request_uri), Some(http_version)) = (
+        request_line.next(),
+        request_line.next(),
+        request_line.next(),
+    ) else {
+        return Err(DecodeHttpError::InvalidHeader);
+    };
+
+    let method = match method {
+        "GET" => Method::Get,
+        _ => return Err(DecodeHttpError::InvalidMethod(method)),
+    };
 
     Ok(Request {
         method: Method::GET,
