@@ -1,7 +1,7 @@
-use crate::http::decode_http_request;
+use crate::http::{Request, Response, decode_http_request};
 use bytes::BytesMut;
 use tokio::{
-    io::AsyncReadExt,
+    io::{AsyncReadExt, AsyncWriteExt},
     net::{TcpListener, TcpStream},
 };
 
@@ -30,6 +30,11 @@ async fn process(mut stream: TcpStream) -> Result<(), Box<dyn std::error::Error>
     match request {
         Ok(request) => {
             println!("{}", request);
+            let response = handle_request(request);
+            let response_bytes: Vec<u8> = response.into();
+            if stream.write_all(&response_bytes).await.is_err() {
+                eprintln!("Error writing response");
+            }
         }
         Err(_) => {
             eprintln!("Error occurred");
@@ -37,4 +42,8 @@ async fn process(mut stream: TcpStream) -> Result<(), Box<dyn std::error::Error>
     }
 
     Ok(())
+}
+
+fn handle_request(_request: Request) -> Response {
+    http::Response { code: 200 }
 }

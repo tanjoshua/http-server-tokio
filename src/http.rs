@@ -3,11 +3,31 @@ use std::fmt;
 
 pub struct Request {
     pub method: Method,
+    pub uri: String,
 }
 
 impl std::fmt::Display for Request {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "Request")
+    }
+}
+
+pub struct Response {
+    pub code: u16,
+}
+
+impl From<Response> for Vec<u8> {
+    fn from(response: Response) -> Self {
+        let mut status_line = String::from("HTTP/1.1 ");
+        let code_and_reason = match response.code {
+            200 => "200 OK",
+            _ => "500 Internal Server Error",
+        };
+
+        status_line.push_str(code_and_reason);
+
+        let response_str = format!("HTTP/1.1 {}", code_and_reason);
+        response_str.into()
     }
 }
 
@@ -18,7 +38,7 @@ pub enum Method {
 
 pub enum DecodeHttpError {
     InvalidHeader,
-    InvalidMethod(&str),
+    InvalidMethod(String),
 }
 
 pub fn decode_http_request(buf: BytesMut) -> Result<Request, DecodeHttpError> {
@@ -38,7 +58,7 @@ pub fn decode_http_request(buf: BytesMut) -> Result<Request, DecodeHttpError> {
     };
 
     let mut request_line = request_line.split_whitespace();
-    let (Some(method), Some(request_uri), Some(http_version)) = (
+    let (Some(method), Some(request_uri), Some(_http_version)) = (
         request_line.next(),
         request_line.next(),
         request_line.next(),
@@ -48,10 +68,12 @@ pub fn decode_http_request(buf: BytesMut) -> Result<Request, DecodeHttpError> {
 
     let method = match method {
         "GET" => Method::Get,
-        _ => return Err(DecodeHttpError::InvalidMethod(method)),
+        "POST" => Method::Post,
+        _ => return Err(DecodeHttpError::InvalidMethod(method.into())),
     };
 
     Ok(Request {
-        method: Method::GET,
+        method,
+        uri: request_uri.into(),
     })
 }
