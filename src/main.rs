@@ -1,4 +1,4 @@
-use crate::http::{Request, Response, decode_http_request};
+use crate::http::{Method, Request, Response, decode_http_request};
 use bytes::BytesMut;
 use tokio::{
     io::{AsyncReadExt, AsyncWriteExt},
@@ -29,7 +29,6 @@ async fn process(mut stream: TcpStream) -> Result<(), Box<dyn std::error::Error>
 
     match request {
         Ok(request) => {
-            println!("{}", request);
             let response = handle_request(request);
             let response_bytes: Vec<u8> = response.into();
             if stream.write_all(&response_bytes).await.is_err() {
@@ -44,6 +43,9 @@ async fn process(mut stream: TcpStream) -> Result<(), Box<dyn std::error::Error>
     Ok(())
 }
 
-fn handle_request(_request: Request) -> Response {
-    http::Response { code: 200 }
+fn handle_request(request: Request) -> Response {
+    match (request.method, request.uri.as_str()) {
+        (Method::Get, "/") => http::Response { code: 200 },
+        (_, _) => http::Response { code: 404 },
+    }
 }
