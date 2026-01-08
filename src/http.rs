@@ -14,6 +14,7 @@ impl std::fmt::Display for Request {
 
 pub struct Response {
     pub code: u16,
+    pub content: Option<Vec<u8>>,
 }
 
 impl From<Response> for Vec<u8> {
@@ -26,11 +27,22 @@ impl From<Response> for Vec<u8> {
 
         status_line.push_str(code_and_reason);
 
-        let response_str = format!("HTTP/1.1 {}", code_and_reason);
-        response_str.into()
+        let mut content_length = 0;
+        if let Some(content) = response.content.as_ref() {
+            content_length = content.len();
+        }
+        let mut response_bytes =
+            format!("{status_line}\r\nContent-Length: {content_length}\r\n\r\n").into_bytes();
+
+        if let Some(content) = response.content {
+            response_bytes.extend_from_slice(content.as_ref());
+        }
+
+        response_bytes
     }
 }
 
+#[derive(Copy, Clone)]
 pub enum Method {
     Get,
     Post,

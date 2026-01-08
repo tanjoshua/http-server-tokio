@@ -45,7 +45,18 @@ async fn process(mut stream: TcpStream) -> Result<(), Box<dyn std::error::Error>
 
 fn handle_request(request: Request) -> Response {
     match (request.method, request.uri.as_str()) {
-        (Method::Get, "/") => http::Response { code: 200 },
-        (_, _) => http::Response { code: 404 },
+        (Method::Get, "/") => main_page_handler(request),
+        (_, _) => http::Response {
+            code: 404,
+            content: None,
+        },
+    }
+}
+
+fn main_page_handler(_request: Request) -> Response {
+    let content = "Hello World!";
+    http::Response {
+        code: 200,
+        content: Some(content.into()),
     }
 }
