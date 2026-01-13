@@ -1,16 +1,67 @@
-<!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Josh</title>
-    <!-- <link rel="stylesheet" href="./style.css"> -->
-    <!-- <link rel="icon" href="./favicon.ico" type="image/x-icon"> -->
-  </head>
-  <body>
-    <main>
-        <h1>Hi, my name is Josh</h1>  
-    </main>
-  </body>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #121212; /* Deep Matte Black */
+            color: #E0E0E0;           /* Soft White */
+            font-family: 'JetBrains Mono', monospace;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        
+        <!-- h1, h2 { color: #FFB86C; } -->
+
+        a {
+          color: #58A6FF;
+          text-decoration: none;
+        }
+        a:hover {
+          text-decoration: underline;
+        }
+    
+        .container { border-left: 2px solid #333; padding-left: 20px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>> whoami</h1>
+        <p>
+          Hi! My name is Josh.
+          <br />
+          I am interested in the technologies and protocols that power the internet.
+          <br />
+          I am currently writing my own implementations of fundamental internet software to better understand them.
+        </p>
+        <h2>> background</h2>
+        <ul>
+          <li>[2019-2023] CS & Econ @ Brown University</li>
+          <li>[2023-now] Software Engineer @ GovTech Singapore</li>
+        </ul>
+        
+        <h2>> current_projects</h2>
+        <ul>
+            <li>This website - a HTTP/1.1 server written in Rust.</li>
+            <li>Authoritative DNS nameserver for tanjoshua.com.</li>
+        </ul>
+
+        <h2>> icebox</h2>
+        <ul>
+            <li>SMTP server</li>
+            <li>HTTP/2</li>
+            <li>Load Balancer with TLS</li>
+        </ul>
+
+        <h2>> find_me</h2>
+        <p><a href="https://www.linkedin.com/in/tjoshua/">LinkedIn</a> / <a href="https://github.com/tanjoshua">Github</a></div>
+</body>
 </html>

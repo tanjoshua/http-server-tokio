@@ -11,7 +11,7 @@ use crate::h1::Encoding;
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let listener = TcpListener::bind("127.0.0.1:4221").await?;
+    let listener = TcpListener::bind("0.0.0.0:8080").await?;
     loop {
         let (stream, socket_addr) = listener.accept().await?;
         tokio::spawn(async move {
