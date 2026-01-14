@@ -38,6 +38,7 @@ pub enum Content {
     Bytes(Vec<u8>),
     OctetStream(Vec<u8>),
     Html(Vec<u8>),
+    ImageXIcon(Vec<u8>),
     Empty,
 }
 
@@ -69,6 +70,12 @@ impl From<Response> for Vec<u8> {
                 response
                     .headers
                     .insert("Content-Type".into(), "application/octet-stream".into());
+                content_bytes = bytes;
+            }
+            Content::ImageXIcon(bytes) => {
+                response
+                    .headers
+                    .insert("Content-Type".into(), "image/x-icon".into());
                 content_bytes = bytes;
             }
             Content::Empty => {}

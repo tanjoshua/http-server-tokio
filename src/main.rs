@@ -85,6 +85,13 @@ async fn process(mut stream: TcpStream) -> Result<(), Box<dyn std::error::Error>
 fn handle_request(request: Request) -> Response {
     match (request.method, request.uri.as_str()) {
         (Method::Get, "/") => main_page_handler(request),
+        (Method::Get, "/favicon.ico") => {
+            let Ok(file) = std::fs::read("public/index.html") else {
+                return Response::new(404, Content::Text("File not found".into()));
+            };
+
+            Response::new(200, Content::ImageXIcon(file))
+        }
         (_, _) => Response::new(404, Content::Empty),
     }
 }
